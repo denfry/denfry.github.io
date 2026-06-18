@@ -23,12 +23,12 @@ applyLang(lang);
 const langBtn = document.getElementById('lang-toggle');
 const themeBtn = document.getElementById('theme-toggle');
 
-langBtn.addEventListener('click', () => {
+if (langBtn) langBtn.addEventListener('click', () => {
   lang = lang === 'en' ? 'ru' : 'en';
   applyLang(lang);
 });
 
-themeBtn.addEventListener('click', () => {
+if (themeBtn) themeBtn.addEventListener('click', () => {
   theme = theme === 'light' ? 'dark' : 'light';
   applyTheme(theme);
 });
