@@ -1,0 +1,8 @@
+.ctl {
+  font-family: var(--mono);
+  font-size: .78rem;
+  border-bottom: 1px solid transparent;
+  transition: color .15s ease, border-color .15s ease;
+}
+.ctl:hover { color: var(--accent); border-bottom-color: var(--accent); }
+.active { color: var(--accent); }
