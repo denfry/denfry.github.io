@@ -28,11 +28,11 @@ export function WorkItem({
       <div>
         <a className={styles.name} href={project.url}>{project.name}</a>
         <p className={styles.desc}>{project.desc[lang]}</p>
-        <p className={styles.tags}>
+        <div className={styles.tags}>
           {project.tags.map((tag) => (
             <span key={tag}>{tag}</span>
           ))}
-        </p>
+        </div>
       </div>
     </motion.li>
   )
