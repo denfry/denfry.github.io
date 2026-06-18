@@ -1,0 +1,25 @@
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--hair);
+}
+.wordmark {
+  font-weight: 700;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  letter-spacing: .12em;
+  text-decoration: none;
+}
+.role { margin-top: .2rem; font-family: var(--mono); font-size: .8rem; color: var(--muted); }
+.nav { display: flex; flex-wrap: wrap; gap: 1rem; align-items: baseline; }
+.link {
+  font-family: var(--mono);
+  font-size: .78rem;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color .15s ease, border-color .15s ease;
+}
+.link:hover { color: var(--accent); border-bottom-color: var(--accent); }
