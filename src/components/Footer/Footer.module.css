@@ -1,0 +1,19 @@
+.foot {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--hair);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+.links a {
+  font-family: var(--mono);
+  font-size: .82rem;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color .15s ease, border-color .15s ease;
+}
+.links a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+.colophon { font-family: var(--mono); font-size: .78rem; color: var(--muted); }
