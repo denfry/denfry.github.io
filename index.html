@@ -1,3 +1,165 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>denfry</title></head>
-<body><!-- filled in Task 2 --></body></html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Denfry — Java developer</title>
+  <meta name="description" content="Denfry — Java developer building Minecraft server-side systems and open-source tooling for AI coding agents.">
+  <link rel="stylesheet" href="style.css">
+  <script>
+    /* no-flash: apply saved theme + language before paint */
+    (function () {
+      try {
+        var t = localStorage.getItem('theme');
+        if (!t) t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', t);
+        var l = localStorage.getItem('lang') || 'en';
+        document.documentElement.setAttribute('lang', l);
+        document.documentElement.setAttribute('data-lang', l);
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+  <div class="wrap">
+
+    <header class="site-head">
+      <a class="wordmark" href="/">DENFRY</a>
+      <p class="role" data-en="Java developer" data-ru="Java-разработчик">Java developer</p>
+      <nav class="head-nav">
+        <button id="lang-toggle" class="ctl" type="button" aria-label="Toggle language">EN / RU</button>
+        <button id="theme-toggle" class="ctl" type="button" aria-label="Toggle theme">Theme</button>
+        <a class="ctl" href="https://t.me/kfcbossalbino">Telegram</a>
+        <a class="ctl" href="https://github.com/denfry">GitHub</a>
+      </nav>
+    </header>
+
+    <section class="intro">
+      <p class="intro-lead"
+         data-en="I build server-side Minecraft systems — plugins, mods, anti-cheat — and open-source tooling for AI coding agents."
+         data-ru="Делаю серверные системы для Minecraft — плагины, моды, античит — и open-source инструменты для AI-агентов.">
+        I build server-side Minecraft systems — plugins, mods, anti-cheat — and open-source tooling for AI coding agents.
+      </p>
+    </section>
+
+    <section class="work">
+      <h2 class="sec-label" data-en="Selected work" data-ru="Избранные проекты">Selected work</h2>
+      <ol class="work-list">
+
+        <li class="work-item">
+          <span class="num">01</span>
+          <div class="work-body">
+            <a class="work-name" href="https://github.com/denfry/codebase-index">codebase-index</a>
+            <p class="work-desc"
+               data-en="Local-first codebase indexing for AI coding agents — hybrid FTS5 + Tree-sitter + graph search, fully offline."
+               data-ru="Локальная индексация кода для AI-агентов — гибрид FTS5 + Tree-sitter + графовый поиск, полностью офлайн.">
+              Local-first codebase indexing for AI coding agents — hybrid FTS5 + Tree-sitter + graph search, fully offline.</p>
+            <p class="tags"><span>Python</span><span>★ 4</span></p>
+          </div>
+        </li>
+
+        <li class="work-item">
+          <span class="num">02</span>
+          <div class="work-body">
+            <a class="work-name" href="https://github.com/denfry/agent-sync">agent-sync</a>
+            <p class="work-desc"
+               data-en="Coordinate multiple AI coding-agent sessions in one repo: shared tasks, file locks, and live messaging over a local SQLite layer."
+               data-ru="Координация нескольких сессий AI-агентов в одном репозитории: общие задачи, блокировки файлов и обмен сообщениями поверх локального SQLite.">
+              Coordinate multiple AI coding-agent sessions in one repo: shared tasks, file locks, and live messaging over a local SQLite layer.</p>
+            <p class="tags"><span>Python</span><span>CLI</span></p>
+          </div>
+        </li>
+
+        <li class="work-item">
+          <span class="num">03</span>
+          <div class="work-body">
+            <a class="work-name" href="https://github.com/denfry/OverWatch-ML">OverWatch-ML</a>
+            <p class="work-desc"
+               data-en="Cheat-detection system for modern Minecraft servers, using behavior analysis and machine learning."
+               data-ru="Система детекта читов для современных Minecraft-серверов на основе анализа поведения и машинного обучения.">
+              Cheat-detection system for modern Minecraft servers, using behavior analysis and machine learning.</p>
+            <p class="tags"><span>Java</span><span>ML</span></p>
+          </div>
+        </li>
+
+        <li class="work-item">
+          <span class="num">04</span>
+          <div class="work-body">
+            <a class="work-name" href="https://github.com/denfry/AquaGuard">AquaGuard</a>
+            <p class="work-desc"
+               data-en="Block logging, inspection and rollback mod for Minecraft Forge 1.18.2–1.21.1."
+               data-ru="Мод логирования блоков, инспекции и отката для Minecraft Forge 1.18.2–1.21.1.">
+              Block logging, inspection and rollback mod for Minecraft Forge 1.18.2–1.21.1.</p>
+            <p class="tags"><span>Java</span><span>Forge mod</span></p>
+          </div>
+        </li>
+
+        <li class="work-item">
+          <span class="num">05</span>
+          <div class="work-body">
+            <a class="work-name" href="https://github.com/denfry/ContinentRegions">ContinentRegions</a>
+            <p class="work-desc"
+               data-en="Paper 1.21.x plugin: draw continents on a BlueMap web map and turn them into WorldGuard regions. SQLite, flag presets, rollback, REST API."
+               data-ru="Плагин Paper 1.21.x: рисует континенты на веб-карте BlueMap и превращает их в регионы WorldGuard. SQLite, пресеты флагов, откат, REST API.">
+              Paper 1.21.x plugin: draw continents on a BlueMap web map and turn them into WorldGuard regions. SQLite, flag presets, rollback, REST API.</p>
+            <p class="tags"><span>Java</span><span>Paper plugin</span></p>
+          </div>
+        </li>
+
+        <li class="work-item">
+          <span class="num">06</span>
+          <div class="work-body">
+            <a class="work-name" href="https://github.com/denfry/WorldAccessBlocker">WorldAccessBlocker</a>
+            <p class="work-desc"
+               data-en="Blocks access to the End, Nether and elytra with configurable, fine-grained rules."
+               data-ru="Блокирует доступ в Энд, Незер и к элитрам с гибкими настраиваемыми правилами.">
+              Blocks access to the End, Nether and elytra with configurable, fine-grained rules.</p>
+            <p class="tags"><span>Java</span><span>Paper plugin</span></p>
+          </div>
+        </li>
+
+        <li class="work-item">
+          <span class="num">07</span>
+          <div class="work-body">
+            <a class="work-name" href="https://github.com/denfry/VeritasAd">VeritasAd</a>
+            <p class="work-desc"
+               data-en="Neural-network analysis system for detecting advertising integrations."
+               data-ru="Нейросетевая система анализа для детекта рекламных интеграций.">
+              Neural-network analysis system for detecting advertising integrations.</p>
+            <p class="tags"><span>Python</span><span>ML</span></p>
+          </div>
+        </li>
+
+      </ol>
+    </section>
+
+    <section class="focus">
+      <h2 class="sec-label" data-en="Focus" data-ru="Направления">Focus</h2>
+      <p class="focus-text"
+         data-en="Minecraft (Paper, Spigot, Forge) · Java backend (Spring, PostgreSQL, MySQL) · Python tooling and ML · anti-cheat and behavior analysis · server performance and infrastructure."
+         data-ru="Minecraft (Paper, Spigot, Forge) · Java-бэкенд (Spring, PostgreSQL, MySQL) · инструменты на Python и ML · античит и анализ поведения · производительность серверов и инфраструктура.">
+        Minecraft (Paper, Spigot, Forge) · Java backend (Spring, PostgreSQL, MySQL) · Python tooling and ML · anti-cheat and behavior analysis · server performance and infrastructure.</p>
+    </section>
+
+    <section class="background">
+      <h2 class="sec-label" data-en="Background" data-ru="О себе">Background</h2>
+      <p class="bg-text"
+         data-en="Networking and information systems, database design, and backend architecture. I run my own Minecraft server, so most projects are tested in real production, not just prototypes."
+         data-ru="Сетевые технологии и информационные системы, проектирование баз данных и серверная архитектура. Держу собственный Minecraft-сервер, поэтому большинство проектов проверены в реальной эксплуатации, а не только в прототипах.">
+        Networking and information systems, database design, and backend architecture. I run my own Minecraft server, so most projects are tested in real production, not just prototypes.</p>
+    </section>
+
+    <footer class="site-foot">
+      <div class="foot-links">
+        <a href="https://t.me/kfcbossalbino">Telegram</a>
+        <a href="https://github.com/denfry">GitHub</a>
+        <a href="https://github.com/denfry?tab=repositories"
+           data-en="All repositories →" data-ru="Все репозитории →">All repositories →</a>
+      </div>
+      <p class="colophon">© <span id="year">2026</span> denfry</p>
+    </footer>
+
+  </div>
+  <script type="module" src="main.js"></script>
+</body>
+</html>
