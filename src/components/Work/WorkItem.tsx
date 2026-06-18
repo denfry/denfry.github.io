@@ -26,7 +26,7 @@ export function WorkItem({
     >
       <span className={styles.num}>{num}</span>
       <div>
-        <a className={styles.name} href={project.url}>{project.name}</a>
+        <a className={styles.name} href={project.url} target="_blank" rel="noopener noreferrer">{project.name}</a>
         <p className={styles.desc}>{project.desc[lang]}</p>
         <div className={styles.tags}>
           {project.tags.map((tag) => (

@@ -9,9 +9,9 @@ export function Footer() {
   return (
     <footer className={styles.foot}>
       <div className={styles.links}>
-        <a href={CONTACTS.telegram}>Telegram</a>
-        <a href={CONTACTS.github}>GitHub</a>
-        <a href={CONTACTS.allRepos}>{STRINGS[lang].allRepos}</a>
+        <a href={CONTACTS.telegram} target="_blank" rel="noopener noreferrer">Telegram</a>
+        <a href={CONTACTS.github} target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href={CONTACTS.allRepos} target="_blank" rel="noopener noreferrer">{STRINGS[lang].allRepos}</a>
       </div>
       <p className={styles.colophon}>© {year} denfry</p>
     </footer>

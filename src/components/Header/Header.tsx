@@ -16,8 +16,8 @@ export function Header() {
       <nav className={styles.nav}>
         <LangToggle />
         <ThemeToggle />
-        <a className={styles.link} href={CONTACTS.telegram}>Telegram</a>
-        <a className={styles.link} href={CONTACTS.github}>GitHub</a>
+        <a className={styles.link} href={CONTACTS.telegram} target="_blank" rel="noopener noreferrer">Telegram</a>
+        <a className={styles.link} href={CONTACTS.github} target="_blank" rel="noopener noreferrer">GitHub</a>
       </nav>
     </header>
   )
