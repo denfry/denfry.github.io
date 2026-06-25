@@ -1,6 +1,6 @@
-import { useTranslations } from 'next-intl'
 import { setRequestLocale } from 'next-intl/server'
 import { use } from 'react'
+import { Hero } from '@/components/sections/Hero'
 
 export default function Home({
   params,
@@ -9,10 +9,5 @@ export default function Home({
 }) {
   const { locale } = use(params)
   setRequestLocale(locale)
-  const t = useTranslations('hero')
-  return (
-    <main>
-      <h1>Denfry — {t('role')}</h1>
-    </main>
-  )
+  return <Hero />
 }
