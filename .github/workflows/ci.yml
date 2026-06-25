@@ -1,0 +1,87 @@
+# CI workflow: runs quality gates on pull requests and pushes to master.
+# Deploy target is Vercel (not GitHub Pages) — see removed deploy.yml.
+
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+jobs:
+  quality:
+    name: Quality gates
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # pnpm must be set up before setup-node so the cache path is known.
+      - uses: pnpm/action-setup@v4
+        with:
+          # Pin to the same major used locally; reads packageManager field if
+          # present, otherwise falls back to this explicit version.
+          version: 11
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # velite is triggered automatically by the pretypecheck hook defined in
+      # package.json, so we do not need to run it explicitly here.
+      - name: Type check
+        run: pnpm typecheck
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Unit tests
+        run: pnpm test
+
+      # prebuild hook triggers velite again before next build — intentional.
+      - name: Build
+        run: pnpm build
+
+      # ---------------------------------------------------------------------------
+      # Lighthouse CI — VISIBILITY ONLY, not a hard gate.
+      #
+      # Rationale: a 3D site falls back to a static poster in headless CI, so
+      # scores should be high, but Lighthouse in CI has real variance (±5 pts is
+      # common). Using `continue-on-error: true` ensures a slightly-low score
+      # never blocks a merge. The report is still surfaced as an Action artifact
+      # via the LHCI upload so the team can track trends.
+      #
+      # The server is started on port 3000 (Next.js default for `next start`).
+      # Port 4317 is reserved for Playwright e2e runs (see playwright.config.ts).
+      # ---------------------------------------------------------------------------
+      - name: Start Next.js server for Lighthouse
+        run: pnpm exec next start --port 3000 &
+        # Give the server a moment to become ready before Lighthouse probes it.
+        # The lighthouse-ci-action will retry, but a head start prevents 503s.
+
+      - name: Wait for server to be ready
+        run: |
+          echo "Waiting for Next.js to start on port 3000..."
+          for i in $(seq 1 30); do
+            if curl -s http://localhost:3000 > /dev/null 2>&1; then
+              echo "Server is up after ${i}s"
+              break
+            fi
+            sleep 1
+          done
+
+      - name: Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v12
+        continue-on-error: true   # <-- non-brittle: a variance dip never fails CI
+        with:
+          urls: |
+            http://localhost:3000
+          # Conservative thresholds: warn instead of error, and set the bar
+          # at 0.80 so genuine regressions are visible without false positives.
+          configPath: ./.lighthouserc.json
+          uploadArtifacts: true
+          temporaryPublicStorage: true
