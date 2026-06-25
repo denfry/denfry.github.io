@@ -19,6 +19,9 @@ import * as THREE from 'three'
  * - Geometry/material disposed on unmount.
  */
 
+/** Base x-tilt angle for isometric/oblique appearance; idle bob offsets from this. */
+const BASE_TILT_X = Math.PI / 8
+
 interface VoxelFieldProps {
   count?: number
 }
@@ -235,7 +238,7 @@ export function VoxelField({ count = 512 }: VoxelFieldProps) {
     // Subtle continuous idle: slow rotation + gentle bob on the group
     const t = state.clock.elapsedTime
     group.rotation.y += delta * 0.08
-    group.rotation.x = Math.sin(t * 0.3) * 0.04
+    group.rotation.x = BASE_TILT_X + Math.sin(t * 0.3) * 0.04
     group.position.y = Math.sin(t * 0.4) * 0.08
   })
 
