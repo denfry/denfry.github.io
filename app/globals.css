@@ -28,8 +28,10 @@
   --color-border: var(--border);
   --color-destructive: var(--destructive);
   --color-accent-foreground: var(--accent-foreground);
-  /* brand-accent overrides shadcn's neutral --accent mapping */
-  --color-accent: oklch(0.72 0.19 145);
+  --color-accent: var(--accent);
+  /* separate brand token for primary brand green */
+  --color-brand: oklch(0.72 0.19 145);
+  --color-brand-foreground: oklch(0.99 0 0);
   --color-muted-foreground: var(--muted-foreground);
   --color-muted: var(--muted);
   --color-secondary-foreground: var(--secondary-foreground);
