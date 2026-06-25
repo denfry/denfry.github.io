@@ -1,0 +1,40 @@
+{
+  "meta": {
+    "title": "Denfry — Java developer",
+    "description": "Java developer building server-side Minecraft systems and open-source tooling for AI coding agents."
+  },
+  "nav": {
+    "projects": "Projects",
+    "order": "Order a project",
+    "github": "GitHub"
+  },
+  "hero": {
+    "role": "Java developer",
+    "lead": "I build server-side Minecraft systems — plugins, mods, anti-cheat — and open-source tooling for AI coding agents.",
+    "cta": "Order a project",
+    "see": "See projects"
+  },
+  "about": {
+    "label": "Background",
+    "text": "Networking and information systems, database design, and backend architecture. I run my own Minecraft server, so most projects are tested in real production, not just prototypes."
+  },
+  "stack": {
+    "label": "Focus",
+    "text": "Minecraft (Paper, Spigot, Forge) · Java backend (Spring, PostgreSQL, MySQL) · Python tooling and ML · anti-cheat and behavior analysis · server performance and infrastructure."
+  },
+  "projects": {
+    "selected": "Selected work",
+    "more": "More on GitHub",
+    "allRepos": "All repositories →"
+  },
+  "contact": {
+    "title": "Let's build something",
+    "order": "Order a project on Telegram",
+    "name": "Name",
+    "contact": "Your contact",
+    "message": "Message",
+    "send": "Send",
+    "sent": "Sent — I'll get back to you.",
+    "error": "Couldn't send. Reach me on Telegram instead."
+  }
+}
