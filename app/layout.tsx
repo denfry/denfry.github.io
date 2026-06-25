@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter, Space_Grotesk } from 'next/font/google'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
+import { SITE_URL } from '@/lib/site'
 import './globals.css'
 
 const sans = Inter({
@@ -14,6 +15,7 @@ const display = Space_Grotesk({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: 'Denfry',
   description: 'Portfolio',
 }

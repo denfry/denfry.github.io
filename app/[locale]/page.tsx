@@ -1,5 +1,6 @@
 import { setRequestLocale } from 'next-intl/server'
 import { Suspense, use } from 'react'
+import { JsonLd } from '@/components/JsonLd'
 import { Reveal } from '@/components/Reveal'
 import { About } from '@/components/sections/About'
 import { Contact } from '@/components/sections/Contact'
@@ -31,6 +32,7 @@ export default function Home({
   setRequestLocale(locale)
   return (
     <>
+      <JsonLd type="Person" />
       <Hero />
       <Reveal>
         <About />
