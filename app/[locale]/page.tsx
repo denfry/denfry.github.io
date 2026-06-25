@@ -1,6 +1,7 @@
 import { setRequestLocale } from 'next-intl/server'
 import { Suspense, use } from 'react'
 import { About } from '@/components/sections/About'
+import { Contact } from '@/components/sections/Contact'
 import { FeaturedProjects } from '@/components/sections/FeaturedProjects'
 import { Hero } from '@/components/sections/Hero'
 import { MoreOnGitHub } from '@/components/sections/MoreOnGitHub'
@@ -36,6 +37,7 @@ export default function Home({
       <Suspense fallback={<MoreOnGitHubSkeleton />}>
         <MoreOnGitHub />
       </Suspense>
+      <Contact />
     </>
   )
 }

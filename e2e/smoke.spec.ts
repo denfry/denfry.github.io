@@ -11,3 +11,23 @@ test('locale switch navigates to ru', async ({ page }) => {
   await page.getByRole('button', { name: 'Switch language' }).click()
   await expect(page).toHaveURL(/\/ru/)
 })
+
+test('contact section: empty submit stays on page and does not navigate', async ({
+  page,
+}) => {
+  await page.goto('/en#contact')
+
+  // Wait for the contact section to be in view
+  const section = page.locator('#contact')
+  await expect(section).toBeVisible()
+
+  // Click the send button without filling fields
+  const sendButton = section.getByRole('button', { name: /send/i })
+  await sendButton.click()
+
+  // Browser validation blocks navigation — URL stays on /en
+  await expect(page).toHaveURL(/\/en/)
+
+  // The form fields are still present (no redirect happened)
+  await expect(section.locator('input[name="name"]')).toBeVisible()
+})
