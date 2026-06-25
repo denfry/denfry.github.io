@@ -26,14 +26,7 @@ export function ContactForm() {
   return (
     <form action={action} className="mt-8 flex flex-col gap-5">
       {/* Honeypot field — hidden from real users */}
-      <input
-        type="text"
-        name="website"
-        tabIndex={-1}
-        autoComplete="off"
-        aria-hidden="true"
-        className="sr-only"
-      />
+      <input type="hidden" name="website" autoComplete="off" />
 
       <div className="flex flex-col gap-1.5">
         <label

@@ -30,7 +30,7 @@ export function Contact() {
 
         <div className="relative my-8 flex items-center gap-4">
           <div className="h-px flex-1 bg-border" />
-          <span className="text-sm text-muted-foreground">or</span>
+          <span className="text-sm text-muted-foreground">{t('or')}</span>
           <div className="h-px flex-1 bg-border" />
         </div>
 
