@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { setRequestLocale } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { projects } from '@/.velite'
 import { MDXContent } from '@/components/MDXContent'
 import { Badge } from '@/components/ui/badge'
@@ -20,6 +20,7 @@ export default async function CaseStudyPage({
   const { locale, slug } = await params
   setRequestLocale(locale)
 
+  const t = await getTranslations('projects')
   const caseStudy = projects.find((p) => p.slug === slug)
   if (!caseStudy) notFound()
 
@@ -29,7 +30,7 @@ export default async function CaseStudyPage({
         href="/#projects"
         className="mb-10 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-brand transition-colors"
       >
-        ← Back to projects
+        ← {t('back')}
       </Link>
 
       <h1 className="mt-6 font-heading text-3xl font-bold tracking-tight sm:text-4xl">

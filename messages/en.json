@@ -25,7 +25,8 @@
   "projects": {
     "selected": "Selected work",
     "more": "More on GitHub",
-    "allRepos": "All repositories →"
+    "allRepos": "All repositories →",
+    "back": "Back to projects"
   },
   "contact": {
     "title": "Let's build something",
