@@ -1,6 +1,7 @@
 import { setRequestLocale } from 'next-intl/server'
 import { use } from 'react'
 import { About } from '@/components/sections/About'
+import { FeaturedProjects } from '@/components/sections/FeaturedProjects'
 import { Hero } from '@/components/sections/Hero'
 import { Stack } from '@/components/sections/Stack'
 
@@ -16,6 +17,7 @@ export default function Home({
       <Hero />
       <About />
       <Stack />
+      <FeaturedProjects />
     </>
   )
 }
