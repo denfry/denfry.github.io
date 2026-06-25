@@ -12,6 +12,13 @@ test('locale switch navigates to ru', async ({ page }) => {
   await expect(page).toHaveURL(/\/ru/)
 })
 
+test('case study page renders the title', async ({ page }) => {
+  await page.goto('/en/projects/codebase-index')
+  await expect(
+    page.getByRole('heading', { name: /codebase-index/i }),
+  ).toBeVisible()
+})
+
 test('contact section: empty submit stays on page and does not navigate', async ({
   page,
 }) => {
