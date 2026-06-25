@@ -1,3 +1,5 @@
+import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import type { Metadata } from 'next'
 import { Inter, Space_Grotesk } from 'next/font/google'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
@@ -33,6 +35,8 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <ThemeProvider>{children}</ThemeProvider>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )
