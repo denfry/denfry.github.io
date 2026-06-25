@@ -7,10 +7,11 @@ import { getMoreRepos } from '@/lib/github'
 export async function MoreOnGitHub() {
   const repos = (await getMoreRepos()).filter((r) => r.description).slice(0, 9)
   const t = await getTranslations('projects')
+  const a = await getTranslations('a11y')
 
   return (
     <section
-      aria-label="More repositories"
+      aria-label={a('moreRepositories')}
       className="mx-auto max-w-5xl px-6 py-24"
     >
       <p className="font-heading text-xs font-semibold uppercase tracking-widest text-brand">

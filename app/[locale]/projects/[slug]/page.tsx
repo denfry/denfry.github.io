@@ -101,7 +101,7 @@ export default async function CaseStudyPage({
         rel="noopener noreferrer"
         className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-brand hover:underline underline-offset-4"
       >
-        View on GitHub →
+        {t('viewOnGithub')} →
       </a>
 
       <hr className="my-10 border-border" />

@@ -26,7 +26,13 @@
     "selected": "Selected work",
     "more": "More on GitHub",
     "allRepos": "All repositories →",
-    "back": "Back to projects"
+    "back": "Back to projects",
+    "viewOnGithub": "View on GitHub"
+  },
+  "a11y": {
+    "switchLanguage": "Switch language",
+    "toggleTheme": "Toggle theme",
+    "moreRepositories": "More repositories"
   },
   "contact": {
     "title": "Let's build something",

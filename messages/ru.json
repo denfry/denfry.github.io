@@ -26,7 +26,13 @@
     "selected": "Избранные проекты",
     "more": "Больше на GitHub",
     "allRepos": "Все репозитории →",
-    "back": "Назад к проектам"
+    "back": "Назад к проектам",
+    "viewOnGithub": "Открыть на GitHub"
+  },
+  "a11y": {
+    "switchLanguage": "Сменить язык",
+    "toggleTheme": "Переключить тему",
+    "moreRepositories": "Другие репозитории"
   },
   "contact": {
     "title": "Давайте создадим что-то",
