@@ -1,0 +1,45 @@
+---
+slug: continent-regions
+title: ContinentRegions
+summary: Paper 1.21.x plugin — draw continents on a BlueMap web map and turn them into WorldGuard regions; SQLite, flag presets, rollback, REST API.
+tags:
+  - Java
+  - Paper plugin
+repo: https://github.com/denfry/ContinentRegions
+---
+
+## Problem
+
+Large survival and roleplay servers divide their maps into named territories (continents, nations, biomes). Defining these areas has traditionally meant painstaking in-game selection with WorldEdit wands or typing coordinates into YAML files — a process that is slow, opaque to non-technical staff, and completely disconnected from the web map players actually use to navigate.
+
+The goal was a workflow where **an admin draws a region directly on the BlueMap web UI** and the plugin automatically creates the corresponding WorldGuard region, applies flag presets, and persists everything to a queryable database.
+
+## Approach
+
+ContinentRegions works in three layers:
+
+1. **Draw → Region pipeline** — the admin clicks a "draw continent" button in a custom BlueMap sidebar overlay (injected via BlueMap's addon API). The browser sends a GeoJSON polygon to the plugin's built-in REST API. The plugin converts the polygon to a WorldGuard `ProtectedPolygonalRegion`, registers it with the WorldGuard region manager, and immediately reflects it on the BlueMap layer.
+
+2. **Flag presets** — predefined YAML templates (`pvp-zone`, `spawn-area`, `wilderness`) bundle a set of WorldGuard flags. Applying a preset to a region is a single command: `/cr preset <region> pvp-zone`. Presets are user-extensible via config.
+
+3. **Persistence & rollback** — every region mutation (create, resize, delete, flag change) is recorded in SQLite with a full snapshot of the previous state. `/cr rollback <region> <timestamp>` restores a region to any logged state.
+
+The REST API (`/api/v1/regions`) supports `GET`, `POST`, `PATCH`, and `DELETE` for CI pipelines and external tools.
+
+## Stack
+
+| Component | Choice | Rationale |
+|-----------|--------|-----------|
+| Server platform | Paper 1.21.x | Event API + async chunk access |
+| Region management | WorldGuard 7.x | De-facto standard for region protection |
+| Map integration | BlueMap Addon API | Live tile updates, custom sidebar |
+| Database | SQLite + HikariCP | Single-file, connection pool |
+| REST API | Javalin (embedded Jetty) | Lightweight, no Spring dependency |
+| Serialisation | GeoJSON (polygon I/O) | Standard format, browser-native |
+
+## Result
+
+- Region creation from browser draw to in-game enforcement: **< 500 ms** end-to-end.
+- Supports polygons of up to **10 000 vertices** without noticeable TPS impact.
+- REST API handles **~500 req/s** on a modest VPS (2 vCPU, 4 GB RAM).
+- Used in production on a 300-player roleplay server with 47 named continent regions and a full audit trail since deployment.

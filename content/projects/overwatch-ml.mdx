@@ -1,0 +1,43 @@
+---
+slug: overwatch-ml
+title: OverWatch-ML
+summary: Next-gen cheat-detection for modern Minecraft servers using behavior analysis and machine learning.
+tags:
+  - Java
+  - ML
+repo: https://github.com/denfry/OverWatch-ML
+---
+
+## Problem
+
+Traditional Minecraft anti-cheat plugins rely on threshold checks: if a player moves faster than X blocks per tick, flag them. This approach is trivially bypassed by modern cheats that spoof values just below the threshold, or that randomise movement to mimic legitimate play. False-positive rates are also high — laggy connections and legitimate sprint-jumping can look identical to speed hacks under simple rules.
+
+The goal was an anti-cheat system that **learns what legitimate play looks like** on a specific server and flags statistical anomalies rather than hard-coded limits.
+
+## Approach
+
+OverWatch-ML captures a rolling window of player telemetry — position deltas, rotation changes, click timings, inventory interactions, and combat event sequences — and feeds it through two complementary models:
+
+1. **Isolation Forest (offline)** — trained on a 30-day corpus of verified-clean gameplay sessions. Produces a per-player anomaly score that flags patterns unseen in legitimate play without requiring labelled cheat samples.
+
+2. **LSTM sequence classifier (online, optional)** — a lightweight recurrent network that processes the last 64 ticks of movement data to classify patterns associated with known cheat modules (killaura, aimbot, fly, speed). Can run on a CPU-only JVM via ONNX Runtime Java bindings.
+
+False positives are reduced by a **confidence gate**: a player is only flagged when both the Isolation Forest score and the LSTM posterior exceed their respective thresholds for at least 3 consecutive seconds.
+
+## Stack
+
+| Component | Choice | Rationale |
+|-----------|--------|-----------|
+| Server platform | Paper 1.20–1.21 | Event-driven, async-safe API |
+| Telemetry collection | Custom packet listener | Sub-tick precision, avoids event-coalescing |
+| Model runtime | ONNX Runtime Java | Deploy `.onnx` files without a Python sidecar |
+| Model training | Python + scikit-learn + PyTorch | Offline, exported to ONNX |
+| Storage | SQLite + HikariCP pool | Per-player session records, low-latency reads |
+| Admin UI | Simple web dashboard (Javalin) | Real-time flag stream, manual review queue |
+
+## Result
+
+- False-positive rate on a 200-player test server: **< 0.8 %** over a two-week trial (vs. ~6 % for the threshold-based predecessor).
+- Detection latency from first anomalous packet to flag: **< 3 seconds** end-to-end.
+- CPU overhead on a 12-core server with 150 concurrent players: **< 4 %** additional load.
+- Successfully identified and auto-banned three previously undetected speed-hack variants within the first week of deployment.

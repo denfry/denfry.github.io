@@ -1,0 +1,43 @@
+---
+slug: veritas-ad
+title: VeritasAd
+summary: Neural-network analysis system for detecting advertising integrations in online content.
+tags:
+  - Python
+  - ML
+repo: https://github.com/denfry/VeritasAd
+---
+
+## Problem
+
+Sponsored content and native advertising are increasingly disguised as organic posts, reviews, or editorial commentary. Manual moderation at scale is impractical; keyword blacklists catch only the most obvious cases and are trivially defeated by paraphrasing. Platforms and researchers need a **reliable, automated classifier** that identifies advertising integrations from the semantic content of a post — not from surface markers like `#ad`.
+
+## Approach
+
+VeritasAd frames the problem as a binary sequence classification task and processes content through a three-stage pipeline:
+
+1. **Preprocessing** — raw text is normalised (Unicode, emoji, hashtag expansion), truncated to 512 tokens, and tokenised with a multilingual `sentence-transformers` model to produce dense embeddings. Images (when present) are optionally processed via a CLIP visual encoder to produce a joint text+image feature vector.
+
+2. **Classification head** — a fine-tuned transformer (distilled multilingual BERT variant) trained on a labelled corpus of ~80 000 posts (40 k organic, 40 k sponsored). Training used class-weighted cross-entropy to handle imbalance and included hard-negative mining — organic posts from brand accounts that are not paid integrations.
+
+3. **Calibration & explanation** — raw logits are calibrated with temperature scaling to produce well-calibrated probabilities. SHAP token-attribution values highlight the spans that most influenced the prediction, making the result interpretable for human reviewers.
+
+The system exposes a REST API (`/classify`) accepting plain text or a URL, and returns a probability score, a binary label, and a list of top contributing token spans.
+
+## Stack
+
+| Component | Choice | Rationale |
+|-----------|--------|-----------|
+| Embeddings | sentence-transformers (multilingual) | Covers RU/EN content in one model |
+| Classifier | Hugging Face Transformers + PyTorch | Standard fine-tuning workflow |
+| Explainability | SHAP (text masker) | Token-level attributions without custom code |
+| API | FastAPI + Uvicorn | Async, low-latency, auto-generated OpenAPI docs |
+| Calibration | scikit-learn `CalibratedClassifierCV` | Reliable probability estimates |
+| Deployment | Docker + ONNX export | CPU inference in < 80 ms per request |
+
+## Result
+
+- **F1 score: 0.91** on a held-out test set of 8 000 posts spanning five platforms and two languages (EN, RU).
+- False-positive rate (legitimate posts flagged as ads): **4.2 %**.
+- Inference latency (ONNX, CPU, p95): **< 80 ms** per request.
+- SHAP explanations accepted by human reviewers as "useful" in 87 % of spot-check cases, reducing average review time from 45 s to 12 s per post.

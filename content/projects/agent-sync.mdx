@@ -1,0 +1,46 @@
+---
+slug: agent-sync
+title: Agent Sync
+summary: Coordinate multiple AI coding-agent sessions in one repo — shared task list, file locks, and live messaging over a local SQLite layer (no server, no network).
+tags:
+  - Python
+  - CLI
+repo: https://github.com/denfry/agent-sync
+---
+
+## Problem
+
+When running several AI coding agents (Claude Code, Copilot, Cursor) concurrently against the same repository, conflicts arise quickly: two agents edit the same file at once, redundant work happens because neither agent knows what the other is doing, and there is no lightweight way to pass messages between sessions without introducing a network daemon or a cloud service.
+
+The goal was a **zero-infrastructure coordination layer** that works entirely on the local filesystem, survives process crashes, and imposes no overhead when only one agent is active.
+
+## Approach
+
+Agent Sync is built around three primitives stored in a single local SQLite database (`~/.agent-sync/state.db`):
+
+1. **Task list** — structured rows of work items with owner, status, and priority. Any agent can atomically claim an unclaimed task using an `UPDATE … WHERE owner IS NULL` pattern, ensuring exactly-once assignment without a distributed lock.
+
+2. **File locks** — agents register intent to write a path. The lock table records the claiming agent's PID and session ID; a watchdog thread expires stale locks when the owning process dies, preventing deadlocks after crashes.
+
+3. **Messaging bus** — agents post to a `messages` table. A blocking `SELECT` poll loop with a small sleep delivers new messages near-instantly without requiring IPC sockets or pipes.
+
+The project ships in two forms:
+- A **Claude Code skill + hooks** that automatically registers lock acquisitions and task claims as Claude Code performs edits.
+- An **agent-agnostic CLI** (`agent-sync claim`, `agent-sync msg`, `agent-sync ls`) that any agent or shell script can call.
+
+## Stack
+
+| Component | Choice | Rationale |
+|-----------|--------|-----------|
+| Database | SQLite (WAL mode) | Single file, concurrent writers, no server |
+| Concurrency | `BEGIN IMMEDIATE` transactions | Serialised writes, optimistic-concurrent reads |
+| Watchdog | `threading.Thread` + `psutil` | Lightweight PID liveness check |
+| CLI | Click + Rich | Human-readable output + machine-parseable JSON flag |
+| Integration | Claude Code hooks (`.claude/settings.json`) | Zero-friction adoption for CC users |
+
+## Result
+
+- Two agents working on the same 30-file refactor with **zero file-level conflicts** in testing.
+- Lock expiry latency after a crashed agent: **< 5 seconds** (one watchdog cycle).
+- SQLite overhead on a typical task-claim round trip: **< 1 ms** on an SSD.
+- Ships as a single `pip install agent-sync`; the Claude Code skill is added with one `claude skills add` command.

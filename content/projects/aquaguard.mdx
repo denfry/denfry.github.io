@@ -1,0 +1,44 @@
+---
+slug: aquaguard
+title: AquaGuard
+summary: Block logging, inspection and rollback mod for Minecraft Forge 1.18.2–1.21.1.
+tags:
+  - Java
+  - Forge mod
+repo: https://github.com/denfry/AquaGuard
+---
+
+## Problem
+
+Minecraft servers experience griefing constantly: players break or place blocks maliciously, admins discover the damage hours later, and rebuilding by hand is time-consuming and error-prone. Existing solutions are Bukkit/Paper-only; Forge modded servers — which run a significantly different API surface — have no mature block-audit tool.
+
+The goal was a **Forge-native** audit mod that logs every block change, lets staff inspect who touched what, and rolls back damage to an arbitrary point in time with a single command.
+
+## Approach
+
+AquaGuard hooks into Forge's event system at two levels:
+
+1. **Block events** — `BlockEvent.BreakEvent`, `BlockEvent.EntityPlaceEvent`, and `BlockEvent.FluidPlaceBlockEvent` capture the actor, block type, position, and old/new state for every change. Explosions and piston chains are unwound to attribute each block to its root cause.
+
+2. **Storage layer** — events are batched and written asynchronously to a compressed SQLite database using WAL mode. Each record stores world UUID, chunk coordinates, block position, actor UUID, timestamp, and a serialised `BlockState` snapshot (JSON-encoded property map).
+
+Rollback is performed by querying events in the time range, reversing them in reverse-chronological order, and applying the old `BlockState` via `Level#setBlockAndUpdate` on the main thread. A preview mode shows a hologram of affected blocks before committing the rollback.
+
+Inspection is done with a stick-like wand: right-clicking a block streams the last N events for that position into the player's chat with pagination.
+
+## Stack
+
+| Component | Choice | Rationale |
+|-----------|--------|-----------|
+| Mod loader | Forge 1.18.2–1.21.1 | Widest modded-server coverage |
+| Database | SQLite + custom async writer | Single-file, zero admin overhead |
+| Serialisation | Gson (BlockState → JSON) | Human-readable, diff-friendly |
+| Config | TOML (Forge standard) | Native Forge config API |
+| Compatibility | Tested with Create, Thermal, Applied Energistics | Covers common Forge mod interactions |
+
+## Result
+
+- Logs **100 % of block events** with < 0.2 ms overhead per event on the logging thread.
+- Rollback of a 5 000-block grief on a test world: **< 2 seconds**.
+- Database size for a busy 50-player server over 30 days: **~180 MB** (after automatic log compaction).
+- Deployed on a modded Forge server running Create + Thermal; zero compatibility issues logged after 6 months.
