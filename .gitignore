@@ -51,3 +51,6 @@ vite.config.d.ts
 
 # git worktrees
 .worktrees
+
+# velite generated output
+/.velite/

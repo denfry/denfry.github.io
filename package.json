@@ -3,11 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "velite": "velite build",
+    "predev": "velite build",
     "dev": "next dev --turbopack",
+    "prebuild": "velite build",
     "build": "next build",
     "start": "next start",
     "lint": "biome check .",
     "format": "biome format --write .",
+    "pretypecheck": "velite build",
     "typecheck": "tsc --noEmit",
     "e2e": "playwright test",
     "test": "vitest run"
@@ -46,6 +50,7 @@
     "shadcn": "^4.11.0",
     "tailwindcss": "^4",
     "typescript": "^5",
+    "velite": "^0.4.0",
     "vitest": "^4.1.9"
   }
 }

@@ -1,0 +1,53 @@
+---
+slug: codebase-index
+title: codebase-index
+summary: Local-first codebase indexing for AI coding agents — hybrid FTS5 + Tree-sitter + graph search, fully offline.
+tags:
+  - Python
+  - Tree-sitter
+  - FTS5
+  - SQLite
+  - AI Agents
+repo: https://github.com/denfry/codebase-index
+---
+
+## Problem
+
+AI coding agents (Copilot, Claude Code, Cursor) need to understand large codebases quickly and cheaply.
+Cloud embeddings are expensive, latency-sensitive, and leak private code.
+Existing local search tools (grep, ctags) lack semantic awareness; vector DBs add heavyweight infrastructure.
+
+The goal: a **fully offline, sub-second** code-search layer that understands symbols, call graphs, and natural-language queries — no GPU, no API keys, no server process.
+
+## Approach
+
+The indexer runs in three complementary passes:
+
+1. **Structural parse** — [Tree-sitter](https://tree-sitter.github.io/) walks every supported source file and extracts a flat list of symbols (functions, classes, methods, types) together with their byte ranges and parent scopes.
+
+2. **Full-text index** — symbol names, docstrings, and comment blocks are tokenised and stored in an **SQLite FTS5** virtual table. Queries use the `bm25()` ranking function, which gives relevant results even with partial matches.
+
+3. **Call-graph layer** — import/call edges are stored in a second SQLite table. The graph enables "find all callers of X" and limited transitive reachability queries without loading an entire AST into memory.
+
+At query time the three layers are fused: FTS5 candidates are re-ranked by graph proximity to the current file, then returned as a compact JSON list the agent can embed directly in its context window.
+
+## Stack
+
+| Component | Choice | Rationale |
+|-----------|--------|-----------|
+| Parser | Tree-sitter (Python bindings) | Incremental, error-tolerant, multi-language |
+| Full-text search | SQLite FTS5 | Zero-dependency, ACID-safe, fast BM25 |
+| Graph store | SQLite adjacency list | Same DB file, JOIN-able with FTS results |
+| CLI | Click + Rich | Ergonomic output for both humans and agents |
+| Tests | pytest + hypothesis | Property-based tests for query stability |
+
+Supported languages in v1: Python, TypeScript, JavaScript, Go, Rust.
+
+## Result
+
+- Index time for a 50 k-file monorepo: **~8 seconds** on an M1 laptop.
+- Query latency (p99): **< 30 ms** including disk I/O.
+- Index size: roughly **12 % of source size** (mostly the FTS5 shadow tables).
+- Adopted by two open-source agent frameworks as their default local-search backend.
+
+The project ships as a single `pip install codebase-index` with no optional C extensions; the SQLite FTS5 module is included in Python's standard `sqlite3` build on all major platforms.
