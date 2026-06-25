@@ -2,7 +2,7 @@
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ReactLenis, useLenis } from 'lenis/react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -14,20 +14,19 @@ function LenisScrollTriggerSync() {
 }
 
 export function SmoothScroll({ children }: { children: React.ReactNode }) {
-  // Detect reduced-motion preference on the client
-  // useEffect to avoid SSR mismatch
-  const prefersReducedMotion =
-    typeof window !== 'undefined' &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  // Start false to match SSR (window is undefined on server → no reduced motion).
+  // After hydration, read the real preference and subscribe to changes.
+  const [reduced, setReduced] = useState(false)
 
   useEffect(() => {
-    if (prefersReducedMotion) {
-      // Refresh ScrollTrigger without Lenis so GSAP still works
-      ScrollTrigger.refresh()
-    }
-  }, [prefersReducedMotion])
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    setReduced(mq.matches)
+    const onChange = () => setReduced(mq.matches)
+    mq.addEventListener('change', onChange)
+    return () => mq.removeEventListener('change', onChange)
+  }, [])
 
-  if (prefersReducedMotion) {
+  if (reduced) {
     // No smooth scroll — render children with native scroll
     return <>{children}</>
   }
