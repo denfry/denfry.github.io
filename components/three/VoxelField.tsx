@@ -1,12 +1,19 @@
 'use client'
 import { useFrame } from '@react-three/fiber'
 import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useEffect, useMemo, useRef } from 'react'
 import * as THREE from 'three'
 
 /**
  * VoxelField — instanced mesh of `count` unit cubes that assemble from scattered
  * positions into a voxel "chunk" shape on mount, then float + rotate subtly.
+ *
+ * Scroll behaviour: once assembled, voxels morph from the chunk "home" shape
+ * into an expanded loose lattice ("shape2") as the user scrolls through the
+ * hero section. ScrollTrigger maps scroll progress [0,1] into `scrollProgress`
+ * ref; useFrame lerps positions accordingly. At progress=0 the shape equals
+ * `home` exactly (no jump from assembly animation).
  *
  * Design intent: a slightly-rotated isometric chunk cube — a 3D grid of voxels
  * with edge/corner emphasis (hollow interior) for an elegant, lightweight look.
@@ -16,6 +23,7 @@ import * as THREE from 'three'
  * - Single reused THREE.Object3D dummy + THREE.Matrix4 for matrix composition.
  * - Positions precomputed once via useMemo (no per-frame allocation).
  * - GSAP progress value animated once on mount, then drives lerp in useFrame.
+ * - scrollProgress ref updated by ScrollTrigger (no React state, no re-renders).
  * - Geometry/material disposed on unmount.
  */
 
@@ -82,6 +90,48 @@ function buildHomePositions(maxCount: number): Float32Array {
 }
 
 /**
+ * Build "shape2" — an expanded loose lattice: same 8×8×8 shell but with a
+ * larger gap so the chunk "breathes" open as you scroll. This gives the chunk
+ * a satisfying "explode" / expand feel without being too chaotic.
+ * Deterministic (no RNG).
+ */
+function buildShape2Positions(maxCount: number): Float32Array {
+  const GRID = 8
+  const GAP = 2.6 // ~2.5× the home gap → visually distinct expanded lattice
+  const positions: number[] = []
+
+  for (let x = 0; x < GRID; x++) {
+    for (let y = 0; y < GRID; y++) {
+      for (let z = 0; z < GRID; z++) {
+        const onEdge =
+          x === 0 ||
+          x === GRID - 1 ||
+          y === 0 ||
+          y === GRID - 1 ||
+          z === 0 ||
+          z === GRID - 1
+        if (!onEdge) continue
+
+        const px = (x - (GRID - 1) / 2) * GAP
+        const py = (y - (GRID - 1) / 2) * GAP
+        const pz = (z - (GRID - 1) / 2) * GAP
+        positions.push(px, py, pz)
+
+        if (positions.length / 3 >= maxCount) break
+      }
+      if (positions.length / 3 >= maxCount) break
+    }
+    if (positions.length / 3 >= maxCount) break
+  }
+
+  while (positions.length / 3 < maxCount) {
+    positions.push(0, 0, 0)
+  }
+
+  return new Float32Array(positions)
+}
+
+/**
  * Build scattered starting positions — deterministic via seeded PRNG,
  * spread ±20 units in all axes with bias toward sphere surface.
  */
@@ -132,12 +182,17 @@ export function VoxelField({ count = 512 }: VoxelFieldProps) {
   // Whether assembly is complete — skip lerp after that to save work
   const assembled = useRef(false)
 
+  // scrollProgress: 0 = home shape, 1 = shape2 (expanded lattice). Updated by
+  // ScrollTrigger; read in useFrame without causing React re-renders.
+  const scrollProgress = useRef(0)
+
   // Precompute positions/colors once (stable, no per-frame allocs)
-  const { home, scattered, colors } = useMemo(() => {
+  const { home, shape2, scattered, colors } = useMemo(() => {
     const home = buildHomePositions(count)
+    const shape2 = buildShape2Positions(count)
     const scattered = buildScatteredPositions(count)
     const colors = buildInstanceColors(count)
-    return { home, scattered, colors }
+    return { home, shape2, scattered, colors }
   }, [count])
 
   // Reusable dummy + matrix (created once, mutated per frame)
@@ -196,6 +251,30 @@ export function VoxelField({ count = 512 }: VoxelFieldProps) {
     }
   }, [count, colors, scattered, dummy])
 
+  // ScrollTrigger: map hero scroll progress [0,1] into scrollProgress ref.
+  // Runs after mount (client only); killed on unmount.
+  // Hand-off: scrollProgress=0 → positions equal home (no jump after assembly).
+  useEffect(() => {
+    // Import ScrollTrigger — already registered by SmoothScroll provider
+    const st = ScrollTrigger.create({
+      trigger: '[data-hero]',
+      start: 'top top',
+      end: 'bottom top',
+      scrub: true,
+      onUpdate: (self) => {
+        scrollProgress.current = self.progress
+      },
+      onLeaveBack: () => {
+        // Snap back to exactly 0 when user scrolls above the hero
+        scrollProgress.current = 0
+      },
+    })
+
+    return () => {
+      st.kill()
+    }
+  }, [])
+
   // Dispose geometry + material on unmount
   useEffect(() => {
     return () => {
@@ -205,15 +284,18 @@ export function VoxelField({ count = 512 }: VoxelFieldProps) {
   }, [geometry, material])
 
   // useFrame: lerp instances scattered→home while assembling; then idle float
+  // + scroll-driven morph from home→shape2 once assembled.
   useFrame((state, delta) => {
     const mesh = meshRef.current
     const group = groupRef.current
     if (!mesh || !group) return
 
     const p = progress.current.value
+    const sp = scrollProgress.current
 
     if (!assembled.current) {
-      // Assembly phase: lerp each instance from scattered to home
+      // Assembly phase: lerp each instance from scattered to home.
+      // scrollProgress is 0 during this phase (user hasn't scrolled).
       for (let i = 0; i < count; i++) {
         const hx = home[i * 3]
         const hy = home[i * 3 + 1]
@@ -233,7 +315,30 @@ export function VoxelField({ count = 512 }: VoxelFieldProps) {
         mesh.setMatrixAt(i, dummy.matrix)
       }
       mesh.instanceMatrix.needsUpdate = true
+    } else if (sp > 0) {
+      // Scroll morph phase (after assembly): lerp home → shape2.
+      // At sp=0 positions equal home exactly — no jump.
+      for (let i = 0; i < count; i++) {
+        const hx = home[i * 3]
+        const hy = home[i * 3 + 1]
+        const hz = home[i * 3 + 2]
+        const tx = shape2[i * 3]
+        const ty = shape2[i * 3 + 1]
+        const tz = shape2[i * 3 + 2]
+
+        dummy.position.set(
+          hx + (tx - hx) * sp,
+          hy + (ty - hy) * sp,
+          hz + (tz - hz) * sp,
+        )
+        dummy.scale.setScalar(1)
+        dummy.rotation.set(0, 0, 0)
+        dummy.updateMatrix()
+        mesh.setMatrixAt(i, dummy.matrix)
+      }
+      mesh.instanceMatrix.needsUpdate = true
     }
+    // When assembled && sp === 0, skip matrix updates (home positions already set)
 
     // Subtle continuous idle: slow rotation + gentle bob on the group
     const t = state.clock.elapsedTime
