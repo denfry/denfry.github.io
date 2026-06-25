@@ -1,4 +1,5 @@
 import { useTranslations } from 'next-intl'
+import { VoxelCanvas } from '@/components/three/VoxelCanvas'
 import { buttonVariants } from '@/components/ui/button'
 import { CONTACTS } from '@/lib/contacts'
 import { cn } from '@/lib/utils'
@@ -11,16 +12,14 @@ export function Hero() {
       data-hero
       className="relative flex min-h-svh items-center justify-center overflow-hidden"
     >
-      {/* Background placeholder layer — Task 18 will mount the voxel canvas here */}
+      {/* 3D voxel canvas layer — pointer-events-none and aria-hidden, sits behind content */}
       <div
         data-voxel-mount
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 z-0"
-        style={{
-          background:
-            'radial-gradient(ellipse 80% 60% at 50% 40%, oklch(0.72 0.19 145 / 0.08) 0%, transparent 70%), linear-gradient(160deg, oklch(0.16 0.01 260) 0%, oklch(0.12 0.02 240) 100%)',
-        }}
-      />
+      >
+        <VoxelCanvas />
+      </div>
 
       {/* Foreground content */}
       <div className="relative z-10 mx-auto max-w-5xl px-6 py-24 text-center">
