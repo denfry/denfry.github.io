@@ -1,5 +1,6 @@
 import { setRequestLocale } from 'next-intl/server'
 import { Suspense, use } from 'react'
+import { Reveal } from '@/components/Reveal'
 import { About } from '@/components/sections/About'
 import { Contact } from '@/components/sections/Contact'
 import { FeaturedProjects } from '@/components/sections/FeaturedProjects'
@@ -31,13 +32,23 @@ export default function Home({
   return (
     <>
       <Hero />
-      <About />
-      <Stack />
-      <FeaturedProjects />
-      <Suspense fallback={<MoreOnGitHubSkeleton />}>
-        <MoreOnGitHub />
-      </Suspense>
-      <Contact />
+      <Reveal>
+        <About />
+      </Reveal>
+      <Reveal delay={0.05}>
+        <Stack />
+      </Reveal>
+      <Reveal delay={0.05}>
+        <FeaturedProjects />
+      </Reveal>
+      <Reveal delay={0.05}>
+        <Suspense fallback={<MoreOnGitHubSkeleton />}>
+          <MoreOnGitHub />
+        </Suspense>
+      </Reveal>
+      <Reveal delay={0.05}>
+        <Contact />
+      </Reveal>
     </>
   )
 }

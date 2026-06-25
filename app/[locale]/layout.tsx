@@ -3,6 +3,7 @@ import { hasLocale, NextIntlClientProvider } from 'next-intl'
 import { setRequestLocale } from 'next-intl/server'
 import { Footer } from '@/components/layout/Footer'
 import { Header } from '@/components/layout/Header'
+import { SmoothScroll } from '@/components/providers/SmoothScroll'
 import { Toaster } from '@/components/ui/sonner'
 import { routing } from '@/i18n/routing'
 
@@ -22,10 +23,12 @@ export default async function LocaleLayout({
   setRequestLocale(locale)
   return (
     <NextIntlClientProvider>
-      <Header />
-      <main>{children}</main>
-      <Footer />
-      <Toaster />
+      <SmoothScroll>
+        <Header />
+        <main>{children}</main>
+        <Footer />
+        <Toaster />
+      </SmoothScroll>
     </NextIntlClientProvider>
   )
 }
