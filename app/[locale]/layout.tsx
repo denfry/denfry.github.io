@@ -1,6 +1,8 @@
 import { notFound } from 'next/navigation'
 import { hasLocale, NextIntlClientProvider } from 'next-intl'
 import { setRequestLocale } from 'next-intl/server'
+import { Footer } from '@/components/layout/Footer'
+import { Header } from '@/components/layout/Header'
 import { routing } from '@/i18n/routing'
 
 export function generateStaticParams() {
@@ -17,5 +19,11 @@ export default async function LocaleLayout({
   const { locale } = await params
   if (!hasLocale(routing.locales, locale)) notFound()
   setRequestLocale(locale)
-  return <NextIntlClientProvider>{children}</NextIntlClientProvider>
+  return (
+    <NextIntlClientProvider>
+      <Header />
+      <main>{children}</main>
+      <Footer />
+    </NextIntlClientProvider>
+  )
 }
