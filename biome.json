@@ -9,7 +9,6 @@
     "ignoreUnknown": true,
     "includes": [
       "**",
-      "!!src_legacy",
       "!!.next",
       "!!.velite",
       "!node_modules",

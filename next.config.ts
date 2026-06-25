@@ -9,6 +9,9 @@ const velitePath = path
   .replace(/\\/g, '/')
 
 const nextConfig = {
+  // Pin the tracing root to this package so Next.js doesn't walk up to the
+  // parent repo's package-lock.json and emit a "workspace root" warning.
+  outputFileTracingRoot: path.join(process.cwd()),
   turbopack: {
     resolveAlias: {
       '@/.velite': velitePath,
