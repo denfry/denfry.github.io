@@ -45,8 +45,6 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   gap: 0 2rem;
   padding: 2.75rem 0;
   border-top: 1px solid var(--hair);
-}
-.section {
   background: color-mix(in srgb, var(--bg) 88%, transparent);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);

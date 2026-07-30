@@ -44,7 +44,7 @@ export function WorkItem({
             height={900}
           />
         )}
-        <h3 className={styles.name}>{project.name}</h3>
+        <h4 className={styles.name}>{project.name}</h4>
         <p className={styles.desc}>{project.desc[lang]}</p>
         <div className={styles.tags}>
           {project.tags.map((tag) => (

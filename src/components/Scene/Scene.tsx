@@ -10,11 +10,10 @@ import styles from './Scene.module.css'
 export function Scene() {
   const reduced = useReducedMotion()
   const scrollProgress = useScrollProgress()
-  const [webglOk, setWebglOk] = useState(true)
+  const [webglOk] = useState(() => supportsWebGL())
   const [hidden, setHidden] = useState(false)
 
   useEffect(() => {
-    setWebglOk(supportsWebGL())
     function onVisibility() {
       setHidden(document.hidden)
     }
@@ -31,7 +30,7 @@ export function Scene() {
       <Canvas
         dpr={[1, 2]}
         camera={{ position: [0, 2.4, 6], fov: 45 }}
-        frameloop={hidden ? 'never' : 'always'}
+        frameloop={hidden ? 'never' : reduced ? 'demand' : 'always'}
       >
         <AdaptiveDpr pixelated />
         <Suspense fallback={null}>

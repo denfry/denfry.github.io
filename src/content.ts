@@ -16,7 +16,7 @@ export const PROJECTS: Project[] = [
     role: 'client',
     image: '/work/uk-altegra-landing.png',
     liveUrl: 'https://uk-altegra.vercel.app',
-    tags: ['Client', 'Landing'],
+    tags: [],
     desc: {
       en: 'Landing page for a residential property management company — service overview, request forms, and a trust-building layout built to the client\'s brand.',
       ru: 'Лендинг управляющей компании — обзор услуг, формы заявок и вёрстка на доверие, под бренд заказчика.',
@@ -27,7 +27,7 @@ export const PROJECTS: Project[] = [
     role: 'client',
     image: '/work/crystal-tower.png',
     liveUrl: 'https://crystal-tower-ten.vercel.app',
-    tags: ['Client', 'Landing'],
+    tags: [],
     desc: {
       en: 'Short-term rental landing for two Moscow-City apartments — live availability calculator, photo carousels, and a custom hotel-grade design built to the client\'s reference.',
       ru: 'Лендинг посуточной аренды двух апартаментов в Москва-Сити — калькулятор дат, карусели фото, кастомный «отельный» дизайн под референс заказчика.',
@@ -38,7 +38,7 @@ export const PROJECTS: Project[] = [
     role: 'client',
     image: '/work/politernal-site.png',
     liveUrl: 'https://politernal-site.vercel.app',
-    tags: ['Client', 'Next.js', 'Prisma'],
+    tags: ['Next.js', 'Prisma'],
     desc: {
       en: 'Production web platform for a Minecraft server business: item/rank shop, player guide, and an admin panel for orders — Next.js, Prisma, Supabase, full EN/RU i18n.',
       ru: 'Продакшн веб-платформа для Minecraft-сервера: магазин рангов и предметов, гайд для игроков, админ-панель заказов — Next.js, Prisma, Supabase, полная EN/RU локализация.',
