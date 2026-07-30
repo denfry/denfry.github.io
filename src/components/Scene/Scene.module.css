@@ -1,0 +1,18 @@
+.stage {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+.stage canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+.fallback {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 20%, color-mix(in srgb, var(--glow) 14%, transparent), transparent 60%);
+}
