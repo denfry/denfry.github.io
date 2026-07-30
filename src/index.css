@@ -1,20 +1,23 @@
 :root {
-  --bg: #F4F1EA;
-  --text: #111111;
-  --muted: #5b554a;
-  --accent: #C2492D;
-  --hair: #D8D3C8;
+  --bg: #F7F6F2;
+  --text: #16161D;
+  --muted: #6E6B76;
+  --accent: #3D2FA6;
+  --glow: #8C86FF;
+  --hair: #DEDAD0;
   --maxw: 1200px;
   --gutter: clamp(120px, 16vw, 200px);
-  --sans: "Helvetica Neue", Arial, sans-serif;
-  --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, monospace;
+  --display: "Fraunces Variable", ui-serif, Georgia, serif;
+  --sans: "Inter Tight Variable", "Helvetica Neue", Arial, sans-serif;
+  --mono: "JetBrains Mono Variable", ui-monospace, "SF Mono", "Cascadia Mono", Menlo, monospace;
 }
 [data-theme="dark"] {
-  --bg: #121110;
-  --text: #EDE9E0;
-  --muted: #9a9384;
-  --accent: #E0623E;
-  --hair: #2A2723;
+  --bg: #121014;
+  --text: #EDEAF5;
+  --muted: #948FA0;
+  --accent: #8C7CFF;
+  --glow: #8C86FF;
+  --hair: #2A2733;
 }
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
