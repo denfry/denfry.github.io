@@ -16,7 +16,9 @@ export function Intro() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, ease: 'easeOut' }}
       >
-        {STRINGS[lang].introLead}
+        {STRINGS[lang].introLeadA}
+        <em className={styles.accent}>{STRINGS[lang].introAccent}</em>
+        {STRINGS[lang].introLeadB}
       </motion.p>
     </section>
   )

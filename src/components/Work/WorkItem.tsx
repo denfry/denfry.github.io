@@ -4,6 +4,20 @@ import { type Lang } from '../../context/PrefsContext'
 import { STRINGS } from '../../i18n'
 import styles from './Work.module.css'
 
+function chromeLabel(project: Project): string | null {
+  if (project.liveUrl) {
+    try {
+      return new URL(project.liveUrl).host
+    } catch {
+      return project.liveUrl
+    }
+  }
+  if (project.codeUrl) {
+    return project.codeUrl.replace(/^https?:\/\//, '')
+  }
+  return null
+}
+
 export function WorkItem({
   project,
   index,
@@ -23,6 +37,9 @@ export function WorkItem({
     : project.codeUrl
       ? { href: project.codeUrl, label: t.viewCode }
       : null
+  const urlLabel = chromeLabel(project)
+  const alt = project.alt ? project.alt[lang] : project.name
+  const frameHref = project.liveUrl ?? project.codeUrl
 
   return (
     <motion.li
@@ -34,15 +51,39 @@ export function WorkItem({
     >
       <span className={styles.num}>{num}</span>
       <div>
-        {project.image && (
-          <img
-            className={styles.image}
-            src={project.image}
-            alt=""
-            loading="lazy"
-            width={1600}
-            height={900}
-          />
+        {project.image && frameHref && (
+          <a
+            className={styles.frame}
+            href={frameHref}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span className={styles.chrome}>
+              <span className={styles.dots} aria-hidden="true">
+                <i className={styles.dotRed} />
+                <i className={styles.dotYellow} />
+                <i className={styles.dotGreen} />
+              </span>
+              <span className={styles.url}>{urlLabel}</span>
+            </span>
+            <picture>
+              <source
+                type="image/webp"
+                srcSet={`${project.image.replace(/\.png$/, '')}-800.webp 800w, ${project.image.replace(/\.png$/, '')}-1600.webp 1600w`}
+                sizes="(max-width: 520px) 100vw, (max-width: 760px) 78vw, 640px"
+              />
+              <img
+                className={styles.shot}
+                src={project.image}
+                srcSet={`${project.image} 1568w`}
+                alt={alt}
+                loading="lazy"
+                decoding="async"
+                width={project.width ?? 1568}
+                height={project.height ?? 756}
+              />
+            </picture>
+          </a>
         )}
         <h4 className={styles.name}>{project.name}</h4>
         <p className={styles.desc}>{project.desc[lang]}</p>

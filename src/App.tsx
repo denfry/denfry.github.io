@@ -4,6 +4,7 @@ import { Work } from './components/Work/Work'
 import { LabeledSection } from './components/LabeledSection/LabeledSection'
 import { Footer } from './components/Footer/Footer'
 import { Scene } from './components/Scene/Scene'
+import { ScrollProgress } from './components/ScrollProgress/ScrollProgress'
 import { usePrefs } from './context/PrefsContext'
 import { STRINGS } from './i18n'
 
@@ -13,6 +14,7 @@ export default function App() {
   return (
     <>
       <Scene />
+      <ScrollProgress />
       <div className="shell">
         <Header />
         <Intro />

@@ -4,6 +4,9 @@ export type Project = {
   name: string
   role: ProjectRole
   image?: string
+  alt?: { en: string; ru: string }
+  width?: number
+  height?: number
   liveUrl?: string
   codeUrl?: string
   tags: string[]
@@ -15,6 +18,10 @@ export const PROJECTS: Project[] = [
     name: 'uk-altegra-landing',
     role: 'client',
     image: '/work/uk-altegra-landing.png',
+    alt: {
+      en: 'uk-altegra-landing — landing page for a property management company',
+      ru: 'uk-altegra-landing — лендинг управляющей компании',
+    },
     liveUrl: 'https://uk-altegra.vercel.app',
     tags: [],
     desc: {
@@ -26,6 +33,10 @@ export const PROJECTS: Project[] = [
     name: 'crystal-tower',
     role: 'client',
     image: '/work/crystal-tower.png',
+    alt: {
+      en: 'crystal-tower — short-term rental landing for Moscow-City apartments',
+      ru: 'crystal-tower — лендинг посуточной аренды апартаментов в Москва-Сити',
+    },
     liveUrl: 'https://crystal-tower-ten.vercel.app',
     tags: [],
     desc: {
@@ -37,6 +48,10 @@ export const PROJECTS: Project[] = [
     name: 'PoliternalSite',
     role: 'client',
     image: '/work/politernal-site.png',
+    alt: {
+      en: 'PoliternalSite — web platform for a Minecraft server business with shop and admin panel',
+      ru: 'PoliternalSite — веб-платформа Minecraft-сервера с магазином и админ-панелью',
+    },
     liveUrl: 'https://politernal-site.vercel.app',
     tags: ['Next.js', 'Prisma'],
     desc: {
@@ -48,6 +63,12 @@ export const PROJECTS: Project[] = [
     name: 'lk-fd-demo',
     role: 'client',
     image: '/work/lk-fd-demo.png',
+    width: 1600,
+    height: 900,
+    alt: {
+      en: 'lk-fd-demo — client cabinet demo for an out-of-home ad seller with interactive map',
+      ru: 'lk-fd-demo — демо личного кабинета продавца наружной рекламы с интерактивной картой',
+    },
     codeUrl: 'https://github.com/denfry/lk-fd-demo',
     tags: ['Next.js', 'Prisma', 'PostgreSQL'],
     desc: {
