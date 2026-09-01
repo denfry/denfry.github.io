@@ -18,7 +18,7 @@ const PROJECTS: Project[] = [
     name: 'codebase-index',
     eyebrow: 'Личный open-source · Python · AI tooling',
     description:
-      'Retrieval/context layer для Claude Code, Codex и MCP-клиентов. Индексирует кодовую базу, строит граф символов и зависимостей и отдаёт агенту точный контекст с привязкой к файлам и строкам.',
+      'Retrieval/context layer для AI coding agents: индексирует кодовую базу, строит граф символов и зависимостей и возвращает точный контекст с привязкой к файлам и строкам. На benchmark 55k LOC Java — Recall@3 70% против 40% у disciplined rg baseline при ~13× меньшем answer-context.',
     tags: ['Python', 'SQLite FTS5', 'Tree-sitter', 'MCP', 'Hybrid / Vector Retrieval'],
     metrics: ['Recall@3 70% vs 40%', '~13× меньше answer-context', 'benchmark: 55k LOC Java'],
     codeUrl: 'https://github.com/denfry/codebase-index',
@@ -27,30 +27,30 @@ const PROJECTS: Project[] = [
     featured: true,
   },
   {
-    name: 'agent-sync',
-    eyebrow: 'Личный open-source · Multi-agent workflow',
-    description:
-      'Локальный слой координации нескольких coding-agent сессий: общие задачи, file locks, сообщения, решения, журнал активности и Claude Code hooks.',
-    tags: ['Python', 'SQLite', 'Claude Code Hooks', 'CLI', 'Multi-agent'],
-    metrics: ['Shared task board', 'Fail-closed file locks', 'No server required'],
-    codeUrl: 'https://github.com/denfry/agent-sync',
-    featured: true,
-  },
-  {
     name: 'streamforge-go',
-    eyebrow: 'Личный проект · Event-driven backend',
+    eyebrow: 'Личный проект · Go · Event-driven backend',
     description:
-      'Сервис аналитики событий с акцентом на конкурентность и надёжность: bounded worker pool, backpressure, retry/DLQ, Kafka, ClickHouse и PostgreSQL.',
+      'Сервис ingestion и аналитики рекламных событий: HTTP API → Kafka → bounded worker pool → ClickHouse, с PostgreSQL как transactional source of truth, Redis-кэшем, backpressure, retry/DLQ, метриками и graceful shutdown.',
     tags: ['Go', 'Kafka', 'ClickHouse', 'PostgreSQL', 'Redis', 'Docker'],
     metrics: ['goroutines / channels', 'Testcontainers', 'Prometheus metrics'],
     codeUrl: 'https://github.com/denfry/streamforge-go',
     featured: true,
   },
   {
+    name: 'agent-sync',
+    eyebrow: 'Личный open-source · Multi-agent workflow',
+    description:
+      'Локальный coordination layer для параллельной работы coding-agent сессий в одном репозитории: task board, file locks, сообщения, решения и журнал активности поверх SQLite. Снижает риск конфликтующих правок без отдельного сервера.',
+    tags: ['Python', 'SQLite', 'Claude Code Hooks', 'CLI', 'Multi-agent'],
+    metrics: ['Shared task board', 'Fail-closed file locks', 'No server required'],
+    codeUrl: 'https://github.com/denfry/agent-sync',
+    featured: true,
+  },
+  {
     name: 'lk-fd-demo',
     eyebrow: 'Fullstack · Реальное ТЗ',
     description:
-      'Личный кабинет для управления наружной рекламой: роли CLIENT/ADMIN, карта, фильтры, календарь доступности, импорт CSV/XLSX, Excel-экспорт и административный контур.',
+      'Личный кабинет для управления наружной рекламой: роли CLIENT/ADMIN, интерактивная карта, фильтры, календарь доступности, импорт CSV/XLSX, Excel-экспорт и административный контур.',
     tags: ['Next.js 16', 'React', 'TypeScript', 'PostgreSQL', 'Prisma', 'Playwright'],
     codeUrl: 'https://github.com/denfry/lk-fd-demo',
     image: '/work/lk-fd-demo-1600.webp',
@@ -58,9 +58,9 @@ const PROJECTS: Project[] = [
   },
   {
     name: 'VibeForge',
-    eyebrow: 'Закрытый проект · Agentic coding platform',
+    eyebrow: 'Собственный закрытый проект · Agentic coding platform',
     description:
-      'Платформа для превращения идеи в требования, архитектуру, задачи и реализацию. Отдельный AI-agent framework/provider abstraction, NestJS API, очереди, realtime и инфраструктура.',
+      'Платформа для превращения идеи в требования, архитектуру, backlog и реализацию. Отдельный AI-agent framework/provider abstraction, NestJS API, очереди, realtime и инфраструктурный слой.',
     tags: ['NestJS', 'Next.js', 'PostgreSQL', 'Redis', 'BullMQ', 'WebSocket', 'AI Agents'],
     metrics: ['Модульная backend-архитектура', 'Agent layer', 'CI/CD + Docker'],
   },
@@ -68,7 +68,7 @@ const PROJECTS: Project[] = [
     name: 'Politernal web platform',
     eyebrow: 'Production · Fullstack / Operations',
     description:
-      'Production-платформа с магазином, аккаунтами, админ-инструментами, ботами и внешними интеграциями. Самостоятельная эксплуатация, миграции, CI/CD и health checks.',
+      'Production-платформа с магазином, аккаунтами, админ-инструментами, ботами и внешними интеграциями. Поддерживаю схему данных, миграции, CI/CD, health checks и исправление production-проблем.',
     tags: ['Next.js', 'TypeScript', 'PostgreSQL', 'Prisma', 'Docker Compose', 'GitHub Actions'],
     image: '/work/politernal-site-1600.webp',
     imageAlt: 'Интерфейс Politernal web platform',
@@ -131,7 +131,9 @@ function ExternalArrow() {
 
 export default function App() {
   const [theme, setTheme] = useState<'dark' | 'light'>(() =>
-    document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark',
+    typeof document !== 'undefined' && document.documentElement.getAttribute('data-theme') === 'light'
+      ? 'light'
+      : 'dark',
   )
 
   useEffect(() => {
@@ -170,24 +172,25 @@ export default function App() {
       <main id="top">
         <section className="hero sectionWrap">
           <div className="heroCopy">
-            <div className="availability"><span className="statusDot" /> Открыт к предложениям</div>
-            <p className="eyebrow">Backend / AI-разработчик · Москва</p>
+            <div className="availability"><span className="statusDot" /> Открыт к Backend / Python / AI предложениям</div>
+            <p className="eyebrow">Данила Юрков · Backend / AI Developer · Москва</p>
             <h1>
-              Строю backend и AI-системы,
-              <span> которые можно измерить и запустить.</span>
+              Backend и AI-разработка —
+              <span> от API и данных до production.</span>
             </h1>
             <p className="heroLead">
-              Python, TypeScript и Go. API, базы данных, интеграции, AI-агенты, retrieval/context infrastructure,
-              realtime и production-эксплуатация. AI использую как инженерный ускоритель, а не замену ревью и архитектуре.
+              Python, TypeScript и Go. Строю backend-сервисы, интеграции и AI-инструменты; проектирую архитектуру,
+              работаю с данными, Docker и CI/CD и довожу систему до запуска. Сильный фокус — retrieval,
+              agentic systems и прикладная автоматизация.
             </p>
             <div className="heroButtons">
               <a className="primaryButton" href="#projects">Смотреть проекты ↓</a>
               <a className="secondaryButton" href="mailto:dabinayo@pm.me">Написать мне</a>
             </div>
-            <div className="heroProof" aria-label="Ключевые показатели">
+            <div className="heroProof" aria-label="Проверяемые показатели codebase-index">
               <div><strong>70%</strong><span>Recall@3<br />codebase-index</span></div>
               <div><strong>~13×</strong><span>меньше<br />answer-context</span></div>
-              <div><strong>55k LOC</strong><span>реальный Java<br />benchmark</span></div>
+              <div><strong>55k LOC</strong><span>Java repo<br />benchmark</span></div>
             </div>
           </div>
 
@@ -203,12 +206,12 @@ export default function App() {
             </div>
             <div className="profileMeta">
               <div>
-                <span className="metaLabel">Фокус сейчас</span>
-                <strong>Python · AI · Backend</strong>
+                <span className="metaLabel">Целевая роль</span>
+                <strong>Backend · Python · AI</strong>
               </div>
               <div>
                 <span className="metaLabel">Формат</span>
-                <strong>Москва / hybrid / remote</strong>
+                <strong>Москва · full-time · hybrid / remote</strong>
               </div>
             </div>
             <div className="profileLinks">
@@ -221,9 +224,9 @@ export default function App() {
         <section className="signalBar" aria-label="Специализация">
           <span>Python</span><i />
           <span>TypeScript</span><i />
+          <span>Go</span><i />
           <span>AI / LLM</span><i />
-          <span>MCP</span><i />
-          <span>RAG</span><i />
+          <span>MCP / RAG</span><i />
           <span>PostgreSQL</span><i />
           <span>Docker</span>
         </section>
@@ -288,13 +291,13 @@ export default function App() {
           <div className="experienceGrid">
             <article>
               <span className="experienceNumber">01</span>
-              <h3>Production-разработка</h3>
-              <p>Веду fullstack-системы от схемы данных и API до Docker, CI/CD, миграций, мониторинга и исправления production-проблем.</p>
+              <h3>Production-проекты</h3>
+              <p>Веду fullstack-системы от схемы данных и API до Docker, CI/CD, миграций, health checks и исправления production-проблем.</p>
             </article>
             <article>
               <span className="experienceNumber">02</span>
               <h3>Внутренняя автоматизация</h3>
-              <p>На текущей работе создавал приложение для архива документов и скрипты, которые убирают ручные операции в рабочих процессах.</p>
+              <p>На текущей работе создавал приложение для архива документов и скрипты, которые автоматизируют рутинные операции при работе с государственными информационными системами.</p>
             </article>
             <article>
               <span className="experienceNumber">03</span>
@@ -345,8 +348,8 @@ export default function App() {
         <section className="sectionWrap contactSection" id="contact">
           <div className="contactPanel">
             <p className="eyebrow">05 / Контакты</p>
-            <h2>Ищу команду, где можно строить реальные backend и AI-продукты.</h2>
-            <p className="contactLead">Интересны Backend / Python / AI Developer позиции и сильные инженерные команды. Готов подробно разобрать архитектуру и код проектов на технической встрече.</p>
+            <h2>Ищу Backend / Python / AI роль с реальными инженерными задачами.</h2>
+            <p className="contactLead">Интересны продуктовые команды, где важны архитектура, качество, данные, интеграции и измеримый результат. Готов подробно разобрать код и решения проектов на технической встрече.</p>
             <div className="contactButtons">
               <a className="primaryButton" href="mailto:dabinayo@pm.me">dabinayo@pm.me</a>
               <a className="secondaryButton" href="https://t.me/denfry" target="_blank" rel="noreferrer">Telegram <ExternalArrow /></a>
@@ -358,7 +361,7 @@ export default function App() {
 
       <footer className="footer sectionWrap">
         <span>© 2026 Данила Юрков</span>
-        <span>Backend · AI · Open Source</span>
+        <span>Backend · Python · AI · Open Source</span>
       </footer>
     </div>
   )
